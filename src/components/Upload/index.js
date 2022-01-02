@@ -1,7 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { Grid, Paper, Button } from "@material-ui/core";
+import Dialog from "../Dialog";
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
 
 const UploadImage = ({ handleUploadImages = () => {}, products }) => {
+  const [duplicateImageNames, setDuplicateImageNames] = useState([]);
+  const [nonDuplicateImages, setNonDuplicateImages] = useState([]);
+  const [warningDialogOpen, setAlertDialogOpen] = useState(false);
+  const [successToastOpen, setSuccessToastOpen] = useState(false);
+
   const onUploadImage = (files) => {
     const fileList = Array.from(files);
     const images = fileList.map((image) => {
@@ -29,8 +37,46 @@ const UploadImage = ({ handleUploadImages = () => {}, products }) => {
         imageUrl: null,
       };
     });
-    handleUploadImages(images);
+
+    const existingImageNames = [];
+    const newImages = [];
+    const productImages = products
+      .map(product => product.productImages)
+      .reduce((acc, image) => acc.concat(image), []);
+
+    images.forEach(image => {
+      const imageExists = productImages.some(existingImage => 
+        existingImage.imageFileName === image.imageFileName
+      );
+      if(imageExists) existingImageNames.push(image.imageFileName);
+      else newImages.push(image);
+    })
+
+    setNonDuplicateImages(newImages);
+
+    if(existingImageNames.length > 0) {
+      setDuplicateImageNames(existingImageNames);
+      setAlertDialogOpen(true);
+    } else {
+      handleUploadImages(newImages);
+      // should wait for the upload action to finish before displaying the toast
+      // (and maybe display an error if the upload failed)
+      setSuccessToastOpen(true);
+    }
   };
+
+  const handleWarningDialogClose = () => {
+    setAlertDialogOpen(false);
+  }
+
+  const handleWarningDialogConfirm = () => {
+    if(nonDuplicateImages.length > 0) {
+      handleUploadImages(nonDuplicateImages);
+      // should wait for the upload action to finish before displaying the toast
+      setSuccessToastOpen(true);
+    }
+    setAlertDialogOpen(false);
+  }
 
   const handleDrop = (e) => {
     e.nativeEvent.preventDefault();
@@ -90,6 +136,30 @@ const UploadImage = ({ handleUploadImages = () => {}, products }) => {
           </div>
         </Paper>
       </Grid>
+      <Dialog
+        imageNames={duplicateImageNames}
+        open={warningDialogOpen}
+        onClose={handleWarningDialogClose}
+        onConfirm={handleWarningDialogConfirm}
+      />
+      <Snackbar
+        open={successToastOpen}
+        autoHideDuration={6000}
+        onClose={() => setSuccessToastOpen(false)}
+        anchorOrigin={{
+          horizontal: 'right',
+          vertical: 'bottom'
+        }}
+      > 
+        <Alert
+          onClose={() => setSuccessToastOpen(false)}
+          elevation={6}
+          variant="filled"
+          severity="success"
+        >
+          Images successfully uploaded.
+        </Alert>
+      </Snackbar>
     </Grid>
   );
 };
