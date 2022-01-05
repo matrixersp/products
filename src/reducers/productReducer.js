@@ -153,6 +153,16 @@ const appReducer = (state = initialState, action) => {
         }),
       };
 
+    case appConstants.SUBMIT_FORM:
+      return {
+        ...state,
+        products: state?.products.map((product) => {
+          if (product.productCode !== action.payload?.productCode) return product;
+          return action.payload;
+        })
+      }
+
+
     default:
       return state;
   }

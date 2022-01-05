@@ -117,3 +117,10 @@ export const changeContentSlot = (
     },
   };
 };
+
+export const submitForm = (product) => {
+  return {
+    type: appConstants.SUBMIT_FORM,
+    payload: product,
+  };
+};

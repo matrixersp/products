@@ -37,10 +37,7 @@ export default function ProductInputs(props) {
             formik.touched.newProductCode &&
             Boolean(formik.errors.newProductCode)
           }
-          onChange={(e) => {
-            formik.setFieldValue("newProductCode", e.target.value);
-            debouncedHandlerProductCode(productIndex, e.target.value);
-          }}
+          onChange={formik.handleChange}
         />
       </Grid>
       <Grid component="div" item xl={3} lg={3} md={3} sm={12} xs={12}>
@@ -57,10 +54,7 @@ export default function ProductInputs(props) {
           error={
             formik.touched.productName && Boolean(formik.errors.productName)
           }
-          onChange={(e) => {
-            formik.setFieldValue("productName", e.target.value);
-            debouncedHandlerProductName(productIndex, e.target.value);
-          }}
+          onChange={formik.handleChange}
         />
       </Grid>
     </Grid>

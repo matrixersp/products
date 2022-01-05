@@ -14,6 +14,7 @@ export default function ProductCard({
   handleChangeProductName = () => {},
   handleChangeProductCategory = () => {},
   handleChangeSlot = () => {},
+  handleSubmitForm = () => {},
 }) {
   const formik = useFormik({
     initialValues: {
@@ -28,6 +29,7 @@ export default function ProductCard({
     validationSchema: productSchema,
     onSubmit: (values) => {
       console.log(values);
+      handleSubmitForm(values);
     },
   });
 
