@@ -11,6 +11,7 @@ import {
   changeProductCategory,
   changeProductName,
   changeProductCode,
+  submitForm,
 } from "./actions";
 import { images, contentSlots } from "./data";
 
@@ -48,6 +49,10 @@ export default function App() {
     dispatch(changeContentSlot(imageFileName, slotSelectedID, productIndex));
   };
 
+  const handleSubmitForm = (product) => {
+    dispatch(submitForm(product));
+  };
+
   return (
     <div className="App">
       <div>
@@ -65,6 +70,7 @@ export default function App() {
               handleChangeProductName={handleChangeProductName}
               handleChangeProductCategory={handleChangeProductCategory}
               handleChangeSlot={handleChangeSlot}
+              handleSubmitForm={handleSubmitForm}
             />
           </div>
         ))}

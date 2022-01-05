@@ -24,7 +24,7 @@ export default function MediaCard({
       (data) => data.validationMessages
     );
 
-  const onSelectContentSlot = (_, slot) => {
+  const onSelectContentSlot = (slot) => {
     formik.setFieldValue(
       `productImages[${productImageIndex}].contentSlot`,
       slot ? slot?.id : ""
@@ -87,7 +87,10 @@ export default function MediaCard({
             />
           )}
           getOptionLabel={(option) => option.name || ""}
-          onChange={onSelectContentSlot}
+          onChange={async(_, slot) => {
+            await formik.submitForm();
+            onSelectContentSlot(slot);
+          }}
         />
       </CardContent>
     </Card>

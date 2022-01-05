@@ -40,9 +40,7 @@ const UploadImage = ({ handleUploadImages = () => {}, products }) => {
 
     const existingImageNames = [];
     const newImages = [];
-    const productImages = products
-      .map(product => product.productImages)
-      .reduce((acc, image) => acc.concat(image), []);
+    const productImages = products.map(product => product.productImages).flat();
 
     images.forEach(image => {
       const imageExists = productImages.some(existingImage => 
